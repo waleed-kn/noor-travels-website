@@ -1,0 +1,134 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  OWNER
+  STAFF
+}
+
+enum PackageStatus {
+  OPEN
+  FEW_SEATS
+  CLOSED
+}
+
+enum City {
+  MAKKAH
+  MADINAH
+}
+
+enum RoomType {
+  SHARING
+  QUAD
+  TRIPLE
+  DOUBLE
+}
+
+enum InquiryStatus {
+  NEW
+  CONTACTED
+  CONFIRMED
+  CLOSED
+}
+
+model AdminUser {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  role         Role      @default(STAFF)
+  failedLogins Int       @default(0)
+  lockedUntil  DateTime?
+  createdAt    DateTime  @default(now())
+}
+
+model Package {
+  id            String         @id @default(cuid())
+  slug          String         @unique
+  title         String
+  durationDays  Int
+  departureCity String
+  departureDate DateTime
+  returnDate    DateTime
+  airline       String
+  status        PackageStatus  @default(OPEN)
+  isFeatured    Boolean        @default(false)
+  isPublished   Boolean        @default(false)
+  archivedAt    DateTime?
+  coverImage    String?
+  sortOrder     Int            @default(0)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  flightLegs   FlightLeg[]
+  hotelStays   HotelStay[]
+  prices       PackagePrice[]
+  childPricing ChildPricing?
+  inquiries    Inquiry[]
+}
+
+model FlightLeg {
+  id        String   @id @default(cuid())
+  packageId String
+  package   Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  flightNo  String
+  route     String
+  date      DateTime
+  depTime   String
+  arrTime   String
+  sortOrder Int      @default(0)
+}
+
+model HotelStay {
+  id           String   @id @default(cuid())
+  packageId    String
+  package      Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  city         City
+  hotelName    String
+  locationNote String
+  nights       String
+  image        String?
+}
+
+model PackagePrice {
+  id        String   @id @default(cuid())
+  packageId String
+  package   Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  roomType  RoomType
+  amount    Int
+
+  @@unique([packageId, roomType])
+}
+
+model ChildPricing {
+  id               String  @id @default(cuid())
+  packageId        String  @unique
+  package          Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  infantPrice      Int
+  childNoBedPrice  Int
+  childBedDiscount Int
+}
+
+model Inquiry {
+  id        String        @id @default(cuid())
+  packageId String?
+  package   Package?      @relation(fields: [packageId], references: [id], onDelete: SetNull)
+  name      String
+  phone     String
+  email     String?
+  roomType  RoomType?
+  adults    Int           @default(1)
+  children  Int           @default(0)
+  infants   Int           @default(0)
+  message   String?
+  status    InquiryStatus @default(NEW)
+  createdAt DateTime      @default(now())
+
+  @@index([status, createdAt])
+}
