@@ -8,6 +8,7 @@ import { buildWhatsAppLink } from "@/lib/whatsapp";
 import { money } from "@/lib/format";
 import { siteConfig } from "@/lib/site";
 import { WhatsAppIcon } from "@/components/icons";
+import { InquiryForm } from "@/components/InquiryForm";
 import {
   ArrowLeft,
   Plane,
@@ -17,8 +18,6 @@ import {
   Baby,
   Sparkles,
   CheckCircle2,
-  Send,
-  Info,
 } from "lucide-react";
 
 export const revalidate = 60;
@@ -407,101 +406,19 @@ export default async function PackageDetailPage({ params }: PackagePageProps) {
             {/* Right Column (4 cols, sticky on desktop): "Send an inquiry" card & WhatsApp */}
             <div className="lg:col-span-4">
               <aside className="sticky top-28 space-y-6">
-                <div className="bg-white rounded-2xl border border-border p-6 sm:p-7 shadow-sm">
-                  {/* Card Header */}
-                  <div className="pb-4 mb-5 border-b border-border">
-                    <span className="inline-block px-3 py-1 rounded-full bg-sand text-gold-dark text-xs font-bold uppercase tracking-wider mb-2">
-                      Instant Booking &amp; Inquiries
-                    </span>
-                    <h2 className="font-display text-2xl font-bold text-navy">
-                      Send an Inquiry
-                    </h2>
-                    <p className="text-xs text-navy-deep/70 mt-1">
-                      Reserve seats for {pkg.title} or request custom dates for your family.
-                    </p>
-                  </div>
+                <InquiryForm
+                  packageId={pkg.id}
+                  packageTitle={pkg.title}
+                  compact={true}
+                  title="Send an Inquiry"
+                  description={`Reserve seats for ${pkg.title} or request custom dates for your family.`}
+                />
 
-                  {/* Inquiry Form Placeholder (interactive form Chunk follows in next chunk) */}
-                  <form className="space-y-4">
-                    <div>
-                      <label htmlFor="inquiry-name" className="block text-xs font-bold uppercase tracking-wider text-navy/70 mb-1">
-                        Full Name
-                      </label>
-                      <input
-                        id="inquiry-name"
-                        type="text"
-                        placeholder="e.g. Haji Muhammad Khan"
-                        disabled
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-sand/20 text-navy text-sm cursor-not-allowed opacity-80"
-                      />
-                    </div>
-
-                    <div>
-                      <label htmlFor="inquiry-phone" className="block text-xs font-bold uppercase tracking-wider text-navy/70 mb-1">
-                        WhatsApp Number
-                      </label>
-                      <input
-                        id="inquiry-phone"
-                        type="tel"
-                        placeholder="e.g. 0312-9121411"
-                        disabled
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-sand/20 text-navy text-sm cursor-not-allowed opacity-80"
-                      />
-                    </div>
-
-                    <div>
-                      <label htmlFor="inquiry-room" className="block text-xs font-bold uppercase tracking-wider text-navy/70 mb-1">
-                        Preferred Room Type
-                      </label>
-                      <select
-                        id="inquiry-room"
-                        disabled
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-sand/20 text-navy text-sm cursor-not-allowed opacity-80"
-                      >
-                        <option>Quad Sharing (Default)</option>
-                        <option>Sharing (5-bed)</option>
-                        <option>Triple Sharing</option>
-                        <option>Double (Private)</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label htmlFor="inquiry-message" className="block text-xs font-bold uppercase tracking-wider text-navy/70 mb-1">
-                        Special Requests (Optional)
-                      </label>
-                      <textarea
-                        id="inquiry-message"
-                        rows={3}
-                        placeholder="Number of adults, children, or elderly assistance needs..."
-                        disabled
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-sand/20 text-navy text-sm cursor-not-allowed opacity-80 resize-none"
-                      />
-                    </div>
-
-                    {/* Placeholder action info */}
-                    <div className="pt-1">
-                      <Button
-                        variant="outline"
-                        fullWidth
-                        size="md"
-                        disabled
-                        className="opacity-75 cursor-not-allowed"
-                      >
-                        <Send className="w-4 h-4 mr-1.5" />
-                        <span>Submit Web Form</span>
-                      </Button>
-                      <p className="text-[11px] text-navy-deep/60 text-center mt-1.5 flex items-center justify-center gap-1">
-                        <Info className="w-3.5 h-3.5 text-gold-dark" />
-                        <span>Online form integration enabled in next update</span>
-                      </p>
-                    </div>
-                  </form>
-
+                <div className="bg-white rounded-2xl border border-border p-6 shadow-sm">
                   {/* Primary WhatsApp Action */}
-                  <div className="mt-6 pt-5 border-t border-border">
-                    <span className="text-xs uppercase font-bold text-navy/70 block mb-2 text-center">
-                      Immediate Response via WhatsApp
-                    </span>
+                  <span className="text-xs uppercase font-bold text-navy/70 block mb-2 text-center">
+                    Immediate Response via WhatsApp
+                  </span>
 
                     <a
                       href={waInquiryUrl}
@@ -518,7 +435,6 @@ export default async function PackageDetailPage({ params }: PackagePageProps) {
                       Instant connection with {siteConfig.name} Umrah consultants in Peshawar Saddar.
                     </p>
                   </div>
-                </div>
               </aside>
             </div>
           </div>
